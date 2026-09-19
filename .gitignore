@@ -5,3 +5,14 @@ build/
 dist/
 .pygbag/
 .web-stage/
+.env
+.env.*
+*.pem
+*.key
+.vscode/
+.idea/
+.pytest_cache/
+.coverage
+htmlcov/
+*.sqlite3
+local_settings.py

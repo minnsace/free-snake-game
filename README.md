@@ -75,3 +75,13 @@ Enter/Space to restart after game over.
 
 Mobile controls: tap to start, then touch anywhere to place and drag the
 joystick. Release to hide it; tap to restart after game over.
+
+## Notes
+
+- This project is a client-side game with no backend, no API keys, and no
+  credentials checked into source control.
+- The README intentionally avoids hosting or deployment specifics because those
+  details are environment-sensitive and do not help a reviewer run the game.
+- If you want to publish the build, host the generated static files through a
+  standard static-site provider or your own CDN; that setup can remain outside
+  the public repo to keep the project clean and low-risk for sharing.
