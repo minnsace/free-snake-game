@@ -13,13 +13,19 @@ from game.input import (
     configure_web_display,
     direction_from_key,
     direction_from_touch,
+    hide_web_splash,
     is_mobile_browser,
+    web_viewport_aspect_ratio,
 )
 
 
 class Game:
     def __init__(self):
         pygame.init()
+        self.touch_controls = is_mobile_browser()
+        browser_aspect = web_viewport_aspect_ratio()
+        if browser_aspect:
+            settings.configure_viewport(browser_aspect)
         pygame.display.set_caption("Free Snake Game")
         self.window = pygame.display.set_mode((settings.WINDOW_W, settings.WINDOW_H))
         configure_web_display()
@@ -27,10 +33,11 @@ class Game:
         # jittery/nauseating look that came from scaling up a scrolling scene.
         self.internal = self.window
         self.clock = pygame.time.Clock()
-        self.font = pygame.font.SysFont("georgia", 22, italic=True)
-        self.title_font = pygame.font.SysFont("georgia", 44, bold=True)
-        self.card_font = pygame.font.SysFont("georgia", 22)
-        self.touch_controls = is_mobile_browser()
+        # Pygame's bundled font renders consistently in desktop and WebAssembly.
+        self.font = pygame.font.Font(None, 28)
+        self.title_font = pygame.font.Font(None, 54)
+        self.card_font = pygame.font.Font(None, 28)
+        self.splash_hidden = False
         self.reset()
 
     def reset(self, start_immediately: bool = False):
@@ -228,6 +235,9 @@ class Game:
             )
 
         pygame.display.flip()
+        if not self.splash_hidden:
+            hide_web_splash()
+            self.splash_hidden = True
 
 
 async def main():

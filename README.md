@@ -36,8 +36,11 @@ directly in the browser at freesnakegame.com.
 - **Responsive steering.** Rapid direction changes are buffered in order, and
   visual interpolation smooths movement between the underlying grid steps.
 - **Mobile browser support.** Touch-capable mobile browsers get tap-to-start
-  and tap-to-restart prompts plus a translucent drag joystick. The canvas keeps
-  its 3:2 aspect ratio and scales to fit portrait or landscape viewports.
+  and tap-to-restart prompts plus a translucent drag joystick. Web builds adapt
+  the visible grid to wide, standard, or portrait browser aspect ratios while
+  preserving square cells.
+- **Polished web shell.** A branded `minnsace` splash covers pygbag startup,
+  and pygame's bundled font keeps menu text stable across desktop and WASM.
 - **Retro pixel aesthetic.** The scene renders directly at the window's
   cell-aligned resolution. Snake segments and food orbs share the same solid
   circle shape and color, while the orb's animated ring provides recognition.

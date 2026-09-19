@@ -163,7 +163,12 @@ def _draw_card(surface: pygame.Surface, width: int, height: int) -> pygame.Rect:
     shade.fill(settings.OVERLAY_SHADE)
     surface.blit(shade, (0, 0))
 
-    card = pygame.Rect(0, 0, width, height)
+    card = pygame.Rect(
+        0,
+        0,
+        min(width, surface.get_width() - 48),
+        min(height, surface.get_height() - 48),
+    )
     card.center = surface.get_rect().center
     pygame.draw.rect(surface, settings.CARD_BG, card, border_radius=6)
     pygame.draw.rect(surface, settings.CARD_BORDER, card, width=2, border_radius=6)
@@ -176,8 +181,15 @@ def _draw_card_text(
     text: str,
     center: tuple[int, int],
     color: tuple[int, int, int] = settings.CARD_TEXT,
+    max_width: int | None = None,
 ) -> None:
     image = font.render(text, True, color)
+    if max_width and image.get_width() > max_width:
+        scale = max_width / image.get_width()
+        image = pygame.transform.smoothscale(
+            image,
+            (max_width, max(1, round(image.get_height() * scale))),
+        )
     surface.blit(image, image.get_rect(center=center))
 
 
@@ -189,17 +201,31 @@ def draw_start_screen(
 ) -> None:
     card = _draw_card(surface, 620, 330)
     center_x = card.centerx
-    _draw_card_text(surface, title_font, "FREE SNAKE", (center_x, card.top + 58))
+    text_width = card.width - 72
+    _draw_card_text(surface, title_font, "FREE SNAKE", (center_x, card.top + 58), max_width=text_width)
     controls = "DRAG THE JOYSTICK TO STEER" if touch_controls else "ARROW KEYS OR WASD TO STEER"
-    _draw_card_text(surface, body_font, controls, (center_x, card.top + 130))
-    _draw_card_text(surface, body_font, "FOLLOW THE TONGUE TO FIND ORBS", (center_x, card.top + 172))
-    _draw_card_text(surface, body_font, "AVOID YOUR TAIL AND THE BLOCKS", (center_x, card.top + 214))
+    _draw_card_text(surface, body_font, controls, (center_x, card.top + 130), max_width=text_width)
+    _draw_card_text(
+        surface,
+        body_font,
+        "FOLLOW THE TONGUE TO FIND ORBS",
+        (center_x, card.top + 172),
+        max_width=text_width,
+    )
+    _draw_card_text(
+        surface,
+        body_font,
+        "AVOID YOUR TAIL AND THE BLOCKS",
+        (center_x, card.top + 214),
+        max_width=text_width,
+    )
     _draw_card_text(
         surface,
         body_font,
         "TAP SCREEN TO START" if touch_controls else "PRESS ENTER OR SPACE TO START",
         (center_x, card.bottom - 48),
         settings.CARD_BORDER,
+        text_width,
     )
 
 
@@ -212,14 +238,22 @@ def draw_game_over_screen(
 ) -> None:
     card = _draw_card(surface, 500, 260)
     center_x = card.centerx
-    _draw_card_text(surface, title_font, "GAME OVER", (center_x, card.top + 58))
-    _draw_card_text(surface, body_font, f"FINAL SCORE: {score}", (center_x, card.top + 128))
+    text_width = card.width - 72
+    _draw_card_text(surface, title_font, "GAME OVER", (center_x, card.top + 58), max_width=text_width)
+    _draw_card_text(
+        surface,
+        body_font,
+        f"FINAL SCORE: {score}",
+        (center_x, card.top + 128),
+        max_width=text_width,
+    )
     _draw_card_text(
         surface,
         body_font,
         "TAP SCREEN TO RESTART" if touch_controls else "PRESS ENTER OR SPACE TO RESTART",
         (center_x, card.bottom - 50),
         settings.CARD_BORDER,
+        text_width,
     )
 
 

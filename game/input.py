@@ -5,6 +5,7 @@ import sys
 
 import pygame
 
+from . import settings
 from .snake import UP, DOWN, LEFT, RIGHT
 
 _KEY_MAP = {
@@ -49,6 +50,17 @@ def is_mobile_browser() -> bool:
     return coarse_pointer or mobile_agent
 
 
+def web_viewport_aspect_ratio() -> float | None:
+    if sys.platform != "emscripten":
+        return None
+
+    from platform import window
+
+    width = max(1.0, float(window.innerWidth))
+    height = max(1.0, float(window.innerHeight))
+    return width / height
+
+
 def configure_web_display() -> None:
     if sys.platform != "emscripten":
         return
@@ -65,7 +77,8 @@ def configure_web_display() -> None:
         "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover",
     )
 
-    document.documentElement.style.background = "#082311"
+    board_color = "#2e9e60"
+    document.documentElement.style.background = board_color
     document.documentElement.style.overflow = "hidden"
     document.body.style.margin = "0"
     document.body.style.width = "100vw"
@@ -73,13 +86,26 @@ def configure_web_display() -> None:
     document.body.style.display = "flex"
     document.body.style.alignItems = "center"
     document.body.style.justifyContent = "center"
-    document.body.style.background = "#082311"
+    document.body.style.background = board_color
     document.body.style.overflow = "hidden"
 
     canvas = document.querySelector("canvas")
     if canvas:
-        canvas.style.width = "min(100vw, 150dvh)"
-        canvas.style.height = "auto"
+        aspect_ratio = settings.INTERNAL_W / settings.INTERNAL_H
+        canvas.style.width = f"min(100vw, {aspect_ratio * 100}dvh)"
+        canvas.style.height = f"min(100dvh, {100 / aspect_ratio}vw)"
+        canvas.style.maxWidth = "100vw"
         canvas.style.maxHeight = "100dvh"
         canvas.style.imageRendering = "pixelated"
         canvas.style.touchAction = "none"
+
+
+def hide_web_splash() -> None:
+    if sys.platform != "emscripten":
+        return
+
+    from platform import document
+
+    splash = document.getElementById("minnsace-splash")
+    if splash:
+        splash.classList.add("is-hidden")

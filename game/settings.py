@@ -1,6 +1,7 @@
 """Central tuning knobs for the camera viewport, world generation, timing, and palette."""
 
-# Viewport size in cells (what's visible on screen at once).
+# Default desktop viewport size in cells. Web builds adapt one axis to the
+# browser's startup aspect ratio while preserving square cells.
 VIEW_W = 30
 VIEW_H = 20
 
@@ -12,6 +13,24 @@ WINDOW_W = VIEW_W * CELL_PX
 WINDOW_H = VIEW_H * CELL_PX
 INTERNAL_W = WINDOW_W
 INTERNAL_H = WINDOW_H
+
+
+def configure_viewport(aspect_ratio: float) -> None:
+    global VIEW_W, VIEW_H, WINDOW_W, WINDOW_H, INTERNAL_W, INTERNAL_H, JOYSTICK_CENTER
+
+    aspect_ratio = max(0.48, min(2.1, aspect_ratio))
+    if aspect_ratio >= 1.0:
+        VIEW_H = 20
+        VIEW_W = max(24, round(VIEW_H * aspect_ratio))
+    else:
+        VIEW_W = 20
+        VIEW_H = max(24, round(VIEW_W / aspect_ratio))
+
+    WINDOW_W = VIEW_W * CELL_PX
+    WINDOW_H = VIEW_H * CELL_PX
+    INTERNAL_W = WINDOW_W
+    INTERNAL_H = WINDOW_H
+    JOYSTICK_CENTER = (116, INTERNAL_H - 116)
 
 FPS = 60
 # Cells moved per second; independent of FPS so speed feels consistent.
