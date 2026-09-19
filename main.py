@@ -135,8 +135,8 @@ class Game:
             settings.JOYSTICK_AXIS_LOCK,
         )
         if direction and direction != self.joystick_direction:
-            self.joystick_direction = direction
-            self.snake.set_direction(direction)
+            if self.snake.set_touch_direction(direction):
+                self.joystick_direction = direction
 
     def _joystick_anchor(self, position: tuple[float, float]) -> tuple[float, float]:
         inset = settings.JOYSTICK_RADIUS + settings.JOYSTICK_EDGE_MARGIN

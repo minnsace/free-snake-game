@@ -159,10 +159,6 @@ def draw_text_centered(surface: pygame.Surface, font: pygame.font.Font, text: st
 
 
 def _draw_card(surface: pygame.Surface, width: int, height: int) -> pygame.Rect:
-    shade = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
-    shade.fill(settings.OVERLAY_SHADE)
-    surface.blit(shade, (0, 0))
-
     card = pygame.Rect(
         0,
         0,

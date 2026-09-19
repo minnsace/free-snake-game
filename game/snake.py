@@ -34,6 +34,17 @@ class Snake:
         if len(self._direction_queue) < 3:
             self._direction_queue.append(new_dir)
 
+    def set_touch_direction(self, new_dir: tuple[int, int]) -> bool:
+        """Use the latest legal joystick turn instead of retaining stale input."""
+        if new_dir == self.direction:
+            self._direction_queue.clear()
+            return True
+        if new_dir == _OPPOSITE.get(self.direction) and len(self.body) > 1:
+            return False
+        self._direction_queue.clear()
+        self._direction_queue.append(new_dir)
+        return True
+
     def grow(self, amount: int = 1) -> None:
         self.growth_pending += amount
 

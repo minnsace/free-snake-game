@@ -29,7 +29,7 @@ directly in the browser at freesnakegame.com.
   the orb distinct from the snake without changing the monochrome palette.
 - **Clear game flow.** A start screen explains steering and the objective
   before movement begins. After a collision, an opaque game-over card keeps
-  the final score and restart prompt readable over the frozen board.
+  the final score and restart prompt readable without dimming the frozen board.
 - **Rising difficulty.** The snake begins at a forgiving pace and speeds up
   slightly with each collected orb, capped so late-game steering remains
   playable as the body grows.
@@ -37,10 +37,10 @@ directly in the browser at freesnakegame.com.
   visual interpolation smooths movement between the underlying grid steps.
 - **Mobile browser support.** Touch-capable mobile browsers get tap-to-start
   and tap-to-restart prompts plus a translucent joystick that appears under the
-  player's thumb. Mobile direction hysteresis prevents diagonal thumb wobble
-  without changing desktop keyboard steering. Web builds adapt the visible grid
-  to wide, standard, or portrait browser aspect ratios while preserving square
-  cells.
+  player's thumb. A small dead zone, light direction hysteresis, and latest-turn
+  input keep it responsive without changing desktop keyboard steering. Web
+  builds adapt the visible grid to wide, standard, or portrait browser aspect
+  ratios while preserving square cells.
 - **Polished web shell.** A branded `minnsace` splash covers pygbag startup,
   and pygame's bundled font keeps menu text stable across desktop and WASM.
 - **Retro pixel aesthetic.** The scene renders directly at the window's
