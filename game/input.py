@@ -98,10 +98,10 @@ def configure_web_display() -> None:
     canvas = document.querySelector("canvas")
     if canvas:
         aspect_ratio = settings.INTERNAL_W / settings.INTERNAL_H
-        canvas.style.width = f"min(100vw, {aspect_ratio * 100}dvh)"
-        canvas.style.height = f"min(100dvh, {100 / aspect_ratio}vw)"
-        canvas.style.maxWidth = "100vw"
-        canvas.style.maxHeight = "100dvh"
+        canvas.style.width = f"max(100vw, {aspect_ratio * 100}dvh)"
+        canvas.style.height = f"max(100dvh, {100 / aspect_ratio}vw)"
+        canvas.style.maxWidth = "none"
+        canvas.style.maxHeight = "none"
         canvas.style.imageRendering = "pixelated"
         canvas.style.touchAction = "none"
 
