@@ -28,7 +28,14 @@ canvas.emscripten#canvas {
   margin: 0 !important;
   transform: translate(-50%, -50%);
   image-rendering: pixelated;
+  border: 0 !important;
+  outline: 0 !important;
   touch-action: none;
+}
+
+canvas.emscripten#canvas:focus,
+canvas.emscripten#canvas:focus-visible {
+  outline: 0 !important;
 }
 
 #minnsace-splash {

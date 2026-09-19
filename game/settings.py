@@ -16,7 +16,7 @@ INTERNAL_H = WINDOW_H
 
 
 def configure_viewport(aspect_ratio: float) -> None:
-    global VIEW_W, VIEW_H, WINDOW_W, WINDOW_H, INTERNAL_W, INTERNAL_H, JOYSTICK_CENTER
+    global VIEW_W, VIEW_H, WINDOW_W, WINDOW_H, INTERNAL_W, INTERNAL_H
 
     aspect_ratio = max(0.48, min(2.1, aspect_ratio))
     if aspect_ratio >= 1.0:
@@ -30,7 +30,6 @@ def configure_viewport(aspect_ratio: float) -> None:
     WINDOW_H = VIEW_H * CELL_PX
     INTERNAL_W = WINDOW_W
     INTERNAL_H = WINDOW_H
-    JOYSTICK_CENTER = (116, INTERNAL_H - 116)
 
 FPS = 60
 # Cells moved per second; independent of FPS so speed feels consistent.
@@ -109,11 +108,11 @@ CARD_TEXT = (218, 246, 226)
 OVERLAY_SHADE = (4, 18, 9, 150)
 
 # --- Mobile controls ---
-JOYSTICK_CENTER = (116, INTERNAL_H - 116)
 JOYSTICK_RADIUS = 88
-JOYSTICK_ACTIVATION_RADIUS = 126
 JOYSTICK_DEAD_ZONE = 20
 JOYSTICK_KNOB_RADIUS = 28
+JOYSTICK_EDGE_MARGIN = 14
+JOYSTICK_AXIS_LOCK = 1.25
 JOYSTICK_BASE_COLOR = (218, 246, 226, 62)
 JOYSTICK_BORDER_COLOR = (218, 246, 226, 145)
 JOYSTICK_KNOB_COLOR = (218, 246, 226, 185)

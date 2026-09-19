@@ -36,9 +36,11 @@ directly in the browser at freesnakegame.com.
 - **Responsive steering.** Rapid direction changes are buffered in order, and
   visual interpolation smooths movement between the underlying grid steps.
 - **Mobile browser support.** Touch-capable mobile browsers get tap-to-start
-  and tap-to-restart prompts plus a translucent drag joystick. Web builds adapt
-  the visible grid to wide, standard, or portrait browser aspect ratios while
-  preserving square cells.
+  and tap-to-restart prompts plus a translucent joystick that appears under the
+  player's thumb. Mobile direction hysteresis prevents diagonal thumb wobble
+  without changing desktop keyboard steering. Web builds adapt the visible grid
+  to wide, standard, or portrait browser aspect ratios while preserving square
+  cells.
 - **Polished web shell.** A branded `minnsace` splash covers pygbag startup,
   and pygame's bundled font keeps menu text stable across desktop and WASM.
 - **Retro pixel aesthetic.** The scene renders directly at the window's
@@ -71,8 +73,8 @@ python main.py
 Desktop controls: Enter/Space to start, arrow keys/WASD to steer, and
 Enter/Space to restart after game over.
 
-Mobile controls: tap to start, drag the lower-left joystick to steer, and tap
-to restart after game over.
+Mobile controls: tap to start, then touch anywhere to place and drag the
+joystick. Release to hide it; tap to restart after game over.
 
 ## Build for the web (pygbag)
 

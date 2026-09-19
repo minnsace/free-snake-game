@@ -28,11 +28,17 @@ def direction_from_touch(
     position: tuple[float, float],
     center: tuple[float, float],
     dead_zone: float,
+    current_direction=None,
+    axis_lock: float = 1.0,
 ):
     dx = position[0] - center[0]
     dy = position[1] - center[1]
     if math.hypot(dx, dy) <= dead_zone:
         return None
+    if current_direction in (LEFT, RIGHT) and abs(dy) <= abs(dx) * axis_lock:
+        return RIGHT if dx > 0 else LEFT
+    if current_direction in (UP, DOWN) and abs(dx) <= abs(dy) * axis_lock:
+        return DOWN if dy > 0 else UP
     if abs(dx) > abs(dy):
         return RIGHT if dx > 0 else LEFT
     return DOWN if dy > 0 else UP

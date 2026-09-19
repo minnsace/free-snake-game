@@ -170,8 +170,8 @@ def _draw_card(surface: pygame.Surface, width: int, height: int) -> pygame.Rect:
         min(height, surface.get_height() - 48),
     )
     card.center = surface.get_rect().center
-    pygame.draw.rect(surface, settings.CARD_BG, card, border_radius=6)
-    pygame.draw.rect(surface, settings.CARD_BORDER, card, width=2, border_radius=6)
+    pygame.draw.rect(surface, settings.CARD_BORDER, card)
+    pygame.draw.rect(surface, settings.CARD_BG, card.inflate(-4, -4))
     return card
 
 
@@ -259,12 +259,12 @@ def draw_game_over_screen(
 
 def draw_joystick(
     surface: pygame.Surface,
+    center_position: tuple[float, float],
     position: tuple[float, float],
-    active: bool,
 ) -> None:
     layer = pygame.Surface(surface.get_size(), pygame.SRCALPHA)
-    center = pygame.Vector2(settings.JOYSTICK_CENTER)
-    knob = pygame.Vector2(position) if active else center.copy()
+    center = pygame.Vector2(center_position)
+    knob = pygame.Vector2(position)
     offset = knob - center
     max_offset = settings.JOYSTICK_RADIUS - settings.JOYSTICK_KNOB_RADIUS
     if offset.length_squared() > max_offset * max_offset:

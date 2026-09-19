@@ -66,7 +66,9 @@ class Game:
         self.t = 0.0
         self.joystick_active = False
         self.joystick_finger_id = None
-        self.joystick_position = settings.JOYSTICK_CENTER
+        self.joystick_center = None
+        self.joystick_position = None
+        self.joystick_direction = None
 
     def _generate_visible_chunks(self) -> None:
         for cx, cy in obstacles_mod.chunks_in_view(self.camera_col, self.camera_row):
@@ -122,14 +124,26 @@ class Game:
         return event.pos
 
     def _update_joystick(self, position: tuple[float, float]) -> None:
+        if self.joystick_center is None:
+            return
         self.joystick_position = position
         direction = direction_from_touch(
             position,
-            settings.JOYSTICK_CENTER,
+            self.joystick_center,
             settings.JOYSTICK_DEAD_ZONE,
+            self.joystick_direction,
+            settings.JOYSTICK_AXIS_LOCK,
         )
-        if direction:
+        if direction and direction != self.joystick_direction:
+            self.joystick_direction = direction
             self.snake.set_direction(direction)
+
+    def _joystick_anchor(self, position: tuple[float, float]) -> tuple[float, float]:
+        inset = settings.JOYSTICK_RADIUS + settings.JOYSTICK_EDGE_MARGIN
+        return (
+            max(inset, min(settings.INTERNAL_W - inset, position[0])),
+            max(inset, min(settings.INTERNAL_H - inset, position[1])),
+        )
 
     def _handle_touch_event(self, event: pygame.event.Event) -> None:
         down_events = (pygame.FINGERDOWN, pygame.MOUSEBUTTONDOWN)
@@ -147,11 +161,13 @@ class Game:
                 return
 
             position = self._event_position(event)
-            if pygame.Vector2(position).distance_to(settings.JOYSTICK_CENTER) > settings.JOYSTICK_ACTIVATION_RADIUS:
+            if self.joystick_active:
                 return
             self.joystick_active = True
             self.joystick_finger_id = getattr(event, "finger_id", None)
-            self._update_joystick(position)
+            self.joystick_center = self._joystick_anchor(position)
+            self.joystick_position = self.joystick_center
+            self.joystick_direction = None
             return
 
         if not self.joystick_active:
@@ -164,7 +180,9 @@ class Game:
         elif event.type in up_events:
             self.joystick_active = False
             self.joystick_finger_id = None
-            self.joystick_position = settings.JOYSTICK_CENTER
+            self.joystick_center = None
+            self.joystick_position = None
+            self.joystick_direction = None
 
     def update(self, dt: float) -> None:
         if not self.started or self.game_over:
@@ -212,11 +230,12 @@ class Game:
             self.t,
         )
         if self.touch_controls and self.started and not self.game_over:
-            renderer.draw_joystick(
-                self.internal,
-                self.joystick_position,
-                self.joystick_active,
-            )
+            if self.joystick_active and self.joystick_center and self.joystick_position:
+                renderer.draw_joystick(
+                    self.internal,
+                    self.joystick_center,
+                    self.joystick_position,
+                )
         renderer.draw_text_centered(self.internal, self.font, f"SCORE: {self.score}", 16)
         if self.game_over:
             renderer.draw_game_over_screen(
