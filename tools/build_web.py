@@ -13,30 +13,7 @@ OUTPUT = ROOT / "build" / "web"
 
 
 def customize_web_shell(generated: Path) -> None:
-    index_path = generated / "index.html"
-    html = index_path.read_text(encoding="utf-8")
-    splash = (ROOT / "web" / "splash.html").read_text(encoding="utf-8").strip()
-
-    if "</head>" not in html or "<body>" not in html:
-        raise RuntimeError("pygbag template is missing expected head/body markers")
-
-    html = html.replace(
-        "</head>",
-        '    <meta name="theme-color" content="#2e9e60">\n'
-        '    <link rel="stylesheet" href="shell.css">\n</head>',
-        1,
-    )
-    voice_panel = (
-        '<iframe src="voice.html?v=jitsi-3" title="Shared voice chat" '
-        'allow="microphone; autoplay" '
-        'style="position:fixed;inset:0;'
-        'width:100%;height:100%;'
-        'border:0;'
-        'z-index:2147483647;background:#112e16"></iframe>'
-    )
-    html = html.replace("<body>", f"<body>\n{splash}\n{voice_panel}", 1)
-    index_path.write_text(html, encoding="utf-8")
-    shutil.copy2(ROOT / "web" / "shell.css", generated / "shell.css")
+    shutil.copy2(ROOT / "web" / "voice.html", generated / "index.html")
     for filename in ("voice.html", "voice.js"):
         shutil.copy2(ROOT / "web" / filename, generated / filename)
 

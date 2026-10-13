@@ -78,8 +78,9 @@ joystick. Release to hide it; tap to restart after game over.
 
 ## Browser voice chat
 
-The web build includes a public, shared voice room. Open the game or the
-`voice.html` page on the same hostname on both devices. On the computer,
+The temporary web build opens a public, shared voice room directly at
+`https://freesnakegame.com/`, with no game or game loader. The `voice.html`
+page is also available on the same hostname. On the computer,
 click **Enable alerts / test sound** and verify that you hear the test.
 On the phone, click **Join voice chat** and allow microphone access.
 Visitors with alerts enabled hear a repeating sound every five seconds while
