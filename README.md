@@ -92,9 +92,11 @@ listener: HQ can hear callers without transmitting its microphone.
 Use **Open direct voice room (fallback)** on both devices if embedding fails.
 The temporary site's voice interface fills the screen, with responsive
 conference sizing, phone-safe padding, and large touch controls.
-The alerts button shows **Enabling sound...**, **Alerts on / test sound**,
-or **Resume alerts / test sound** to reflect the actual browser audio state.
-Testing alerts again during connection does not restart the conference.
+The alerts button is a toggle: **Enable alerts / test sound** enables alerts,
+and **Alerts on / turn off** disables them. Turning alerts off disconnects
+a muted HQ listener; it does not interrupt an active voice caller.
+If sound is suspended, turn alerts off and on again to resume it.
+Answering as HQ unmutes the existing conference rather than adding a listener.
 
 Keep the page open, the phone unlocked, and the computer awake. Use HTTPS
 (or localhost for development). Browser autoplay restrictions require a click
@@ -108,8 +110,9 @@ No account or API key is required; no visitor acts as a room server.
 The temporary room is public, not private or authenticated. The provider
 handles conference metadata and media; its terms of use apply.
 Alerts identify callers separately from participants named `HQ alert listener`.
-The native Jitsi microphone button controls muting. Leave returns to muted
-HQ listening if alerts are enabled. Reload to disconnect completely.
+The native Jitsi microphone button controls muting. **Leave voice chat**
+turns alerts off and disconnects completely; it never rejoins automatically.
+Controls wait for conference hangup before allowing another connection.
 Verify a two-device call on your actual networks before relying on it, and
 keep another contact method available. No public service guarantees uptime.
 

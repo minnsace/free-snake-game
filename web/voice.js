@@ -15,6 +15,7 @@
   let talking = false;
   let alertsEnabled = false;
   let enablingAlerts = false;
+  let disconnecting = false;
   let audioContext;
   let lastAlert = 0;
   let connectTimeout;
@@ -23,15 +24,15 @@
 
   function update() {
     const soundReady = alertsEnabled && audioContext?.state === "running";
-    ui.alerts.disabled = enablingAlerts;
+    ui.alerts.disabled = enablingAlerts || disconnecting;
     ui.alerts.setAttribute("aria-busy", String(enablingAlerts));
-    ui.alerts.setAttribute("aria-pressed", String(soundReady));
+    ui.alerts.setAttribute("aria-pressed", String(alertsEnabled));
     ui.alerts.textContent = enablingAlerts
       ? "Enabling sound..."
       : soundReady
-        ? "Alerts on / test sound"
+        ? "Alerts on / turn off"
         : alertsEnabled
-          ? "Resume alerts / test sound"
+          ? "Alerts paused / turn off"
           : "Enable alerts / test sound";
     const count = [...participants.values()].filter(name => name !== listenerName).length;
     ui.presence.textContent = !api
@@ -41,12 +42,13 @@
         : count
           ? `${count} ${count === 1 ? "caller" : "callers"} waiting${talking ? "" : " - join voice chat to answer!"}`
           : "No other voice callers yet.";
-    ui.join.disabled = !!api && !connected;
+    ui.join.disabled = disconnecting || enablingAlerts || (!!api && !connected);
     ui.join.hidden = talking;
     ui.leave.hidden = !api;
+    ui.leave.disabled = enablingAlerts || disconnecting;
     if (connected && !talking && alertsEnabled && count && Date.now() - lastAlert >= 5000) {
       if (audioContext.state !== "running") {
-        report("Alert sound is suspended. Click Enable alerts again and keep this tab open.");
+        report("Alert sound is suspended. Turn alerts off and on again, and keep this tab open.");
       } else {
         lastAlert = Date.now();
         beep();
@@ -80,22 +82,43 @@
     }
   }
 
-  function stop() {
+  function stop(alreadyLeft = false) {
+    if (disconnecting) return;
     clearTimeout(connectTimeout);
     const previous = api;
     api = undefined;
+    alertsEnabled = false;
     connected = false;
     talking = false;
     participants.clear();
-    previous?.dispose();
-    ui.conference.replaceChildren();
-    ui.conference.hidden = true;
-    ui.status.textContent = "Disconnected. Enable alerts or join again.";
+    disconnecting = !!previous && !alreadyLeft;
+    let finished = false;
+    const finish = () => {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timeout);
+      previous?.dispose();
+      ui.conference.replaceChildren();
+      ui.conference.hidden = true;
+      disconnecting = false;
+      ui.status.textContent = "Disconnected. Alerts off.";
+      update();
+    };
+    let timeout;
+    if (disconnecting) {
+      ui.status.textContent = "Leaving voice chat...";
+      // Keep the iframe alive until the server has processed the hangup.
+      previous.addListener("readyToClose", finish);
+      timeout = setTimeout(finish, 5000);
+      previous.executeCommand("hangup");
+    } else {
+      finish();
+    }
     update();
   }
 
   function start(asCaller) {
-    stop();
+    if (api || disconnecting) return;
     report("");
     if (typeof JitsiMeetExternalAPI === "undefined") {
       report("Conference service could not load. Use Open direct voice room below.");
@@ -180,7 +203,7 @@
       update();
     });
     current.addListener("videoConferenceLeft", () => {
-      if (api === current) stop();
+      if (api === current) stop(true);
     });
     current.addListener("errorOccurred", event => {
       if (api !== current) return;
@@ -194,7 +217,14 @@
   }
 
   ui.alerts.onclick = async () => {
-    if (enablingAlerts) return;
+    if (enablingAlerts || disconnecting) return;
+    if (alertsEnabled) {
+      alertsEnabled = false;
+      report("");
+      if (!talking) stop();
+      update();
+      return;
+    }
     enablingAlerts = true;
     update();
     try {
@@ -209,14 +239,34 @@
       update();
     }
   };
-  ui.join.onclick = () => start(true);
-  ui.leave.onclick = () => {
-    stop();
-    if (alertsEnabled) start(false);
+  ui.join.onclick = async () => {
+    if (disconnecting || enablingAlerts || talking) return;
+    if (!api) {
+      start(true);
+      return;
+    }
+    if (!connected) return;
+    const current = api;
+    talking = true;
+    update();
+    try {
+      const muted = await current.isAudioMuted();
+      if (api !== current) return;
+      current.executeCommand("displayName", callerName);
+      if (muted) current.executeCommand("toggleAudio");
+      ui.status.textContent = "In voice chat. Allow microphone access and unmute below to talk.";
+    } catch (error) {
+      if (api === current) {
+        talking = false;
+        report(`Could not enable microphone: ${error.message}`);
+        update();
+      }
+    }
   };
+  ui.leave.onclick = () => stop();
   setInterval(update, 1000);
   document.addEventListener("visibilitychange", update);
-  window.addEventListener("pagehide", stop);
+  window.addEventListener("pagehide", () => stop());
   ui.status.textContent = "Ready. Choose Enable alerts at HQ, or Join voice chat in the field.";
   update();
 })();
