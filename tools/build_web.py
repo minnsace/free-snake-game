@@ -27,11 +27,11 @@ def customize_web_shell(generated: Path) -> None:
         1,
     )
     voice_panel = (
-        '<iframe src="voice.html?v=jitsi-2" title="Shared voice chat" '
+        '<iframe src="voice.html?v=jitsi-3" title="Shared voice chat" '
         'allow="microphone; autoplay" '
-        'style="position:fixed;right:8px;bottom:8px;'
-        'width:min(380px,calc(100vw - 16px));height:310px;'
-        'border:2px solid #5bcd82;border-radius:8px;'
+        'style="position:fixed;inset:0;'
+        'width:100%;height:100%;'
+        'border:0;'
         'z-index:2147483647;background:#112e16"></iframe>'
     )
     html = html.replace("<body>", f"<body>\n{splash}\n{voice_panel}", 1)

@@ -89,6 +89,11 @@ the conference's microphone button keeps you in the room but mutes outgoing
 audio. **Enable alerts** connects HQ to the hosted conference as a muted
 listener: HQ can hear callers without transmitting its microphone.
 Use **Open direct voice room (fallback)** on both devices if embedding fails.
+The temporary site's voice interface fills the screen, with responsive
+conference sizing, phone-safe padding, and large touch controls.
+The alerts button shows **Enabling sound...**, **Alerts on / test sound**,
+or **Resume alerts / test sound** to reflect the actual browser audio state.
+Testing alerts again during connection does not restart the conference.
 
 Keep the page open, the phone unlocked, and the computer awake. Use HTTPS
 (or localhost for development). Browser autoplay restrictions require a click

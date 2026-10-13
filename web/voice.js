@@ -14,6 +14,7 @@
   let connected = false;
   let talking = false;
   let alertsEnabled = false;
+  let enablingAlerts = false;
   let audioContext;
   let lastAlert = 0;
   let connectTimeout;
@@ -21,6 +22,17 @@
   const report = message => { ui.error.textContent = message; };
 
   function update() {
+    const soundReady = alertsEnabled && audioContext?.state === "running";
+    ui.alerts.disabled = enablingAlerts;
+    ui.alerts.setAttribute("aria-busy", String(enablingAlerts));
+    ui.alerts.setAttribute("aria-pressed", String(soundReady));
+    ui.alerts.textContent = enablingAlerts
+      ? "Enabling sound..."
+      : soundReady
+        ? "Alerts on / test sound"
+        : alertsEnabled
+          ? "Resume alerts / test sound"
+          : "Enable alerts / test sound";
     const count = [...participants.values()].filter(name => name !== listenerName).length;
     ui.presence.textContent = !api
       ? "Enable alerts to wait at HQ, or join voice chat to call."
@@ -45,7 +57,10 @@
   async function unlockAudio() {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) throw new Error("This browser does not support sound alerts.");
-    audioContext ||= new AudioContextClass();
+    if (!audioContext || audioContext.state === "closed") {
+      audioContext = new AudioContextClass();
+      audioContext.addEventListener("statechange", update);
+    }
     await audioContext.resume();
     if (audioContext.state !== "running") throw new Error("Sound is blocked. Click Enable alerts again.");
   }
@@ -94,7 +109,7 @@
         roomName: room,
         parentNode: ui.conference,
         width: "100%",
-        height: 320,
+        height: "100%",
         userInfo: { displayName: asCaller ? callerName : listenerName },
         configOverwrite: {
           prejoinConfig: { enabled: false },
@@ -179,14 +194,20 @@
   }
 
   ui.alerts.onclick = async () => {
+    if (enablingAlerts) return;
+    enablingAlerts = true;
+    update();
     try {
       await unlockAudio();
       alertsEnabled = true;
-      ui.alerts.textContent = "Alerts enabled / test sound";
       report("");
       beep();
-      if (!api || !connected) start(false);
+      if (!api) start(false);
     } catch (error) { report(error.message); }
+    finally {
+      enablingAlerts = false;
+      update();
+    }
   };
   ui.join.onclick = () => start(true);
   ui.leave.onclick = () => {
@@ -194,6 +215,7 @@
     if (alertsEnabled) start(false);
   };
   setInterval(update, 1000);
+  document.addEventListener("visibilitychange", update);
   window.addEventListener("pagehide", stop);
   ui.status.textContent = "Ready. Choose Enable alerts at HQ, or Join voice chat in the field.";
   update();

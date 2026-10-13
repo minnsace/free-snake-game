@@ -2,36 +2,65 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Free Snake Voice Chat</title>
   <style>
     :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #112e16; color: #daf6e2; }
-    body { margin: 0; padding: 14px; }
-    h1 { margin: 0 0 8px; font-size: 20px; }
-    p { margin: 8px 0; font-size: 14px; }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; height: 100vh; height: 100dvh; display: flex; flex-direction: column; }
+    header { padding: max(12px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) 10px max(14px, env(safe-area-inset-left)); }
+    h1 { margin: 0 0 6px; font-size: 20px; }
+    p { margin: 6px 0; font-size: 14px; line-height: 1.4; }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
     button, a { font: inherit; }
-    button { padding: 10px 12px; margin: 4px 4px 4px 0; border: 1px solid #5bcd82; border-radius: 6px; background: #246b3d; color: white; cursor: pointer; }
+    button { min-height: 48px; padding: 12px 16px; border: 1px solid #5bcd82; border-radius: 8px; background: #246b3d; color: white; cursor: pointer; touch-action: manipulation; }
+    #join { background: #daf6e2; color: #112e16; font-weight: bold; }
+    #alerts[aria-pressed="true"] { border-color: #daf6e2; background: #17462a; }
     button:disabled { opacity: .5; cursor: default; }
+    button:focus-visible, a:focus-visible { outline: 3px solid #daf6e2; outline-offset: 3px; }
     a { color: #a1ffc0; }
     #error { color: #ffb9ad; }
+    #error:empty { display: none; }
     #presence { font-weight: bold; }
-    .note { font-size: 12px; }
-    #conference { margin-top: 10px; }
+    footer { padding: 8px max(14px, env(safe-area-inset-right)) max(8px, env(safe-area-inset-bottom)) max(14px, env(safe-area-inset-left)); font-size: 12px; }
+    footer p { font-size: 12px; }
+    #conference { flex: 1; min-height: 180px; background: #071a0c; }
+    #conference iframe { display: block; width: 100% !important; height: 100% !important; border: 0; }
+    @media (max-width: 480px) {
+      .controls button { flex: 1 1 auto; }
+      h1 { font-size: 18px; }
+    }
+    @media (max-height: 500px) {
+      header { padding-top: 6px; padding-bottom: 6px; }
+      h1 { display: none; }
+      .controls { margin-top: 6px; }
+      footer .note { display: none; }
+      #conference { min-height: 180px; }
+    }
   </style>
   <script defer src="https://meet.element.io/external_api.js"></script>
-  <script defer src="voice.js?v=jitsi-2"></script>
+  <script defer src="voice.js?v=jitsi-3"></script>
 </head>
 <body>
-  <h1>Shared voice chat</h1>
+  <header>
+  <h1>HQ / Field voice chat</h1>
   <p id="status" role="status" aria-live="polite">Loading voice controls...</p>
   <p id="presence" aria-live="polite"></p>
-  <button id="alerts">Enable alerts / test sound</button>
+  <div class="controls">
+  <button id="alerts" aria-pressed="false">Enable alerts / test sound</button>
   <button id="join">Join voice chat</button>
   <button id="leave" hidden>Leave voice chat</button>
+  </div>
   <p id="error" role="alert"></p>
-  <p><a id="direct" href="https://meet.element.io/FreeSnakeHQ20261013Field7a83d9" target="_blank" rel="noopener">Open direct voice room (fallback)</a></p>
-  <p class="note">Public room hosted by Element (Jitsi). Enable alerts connects HQ as a muted listener who can hear callers. Keep this page open and your phone unlocked. Use headphones. No camera needed.</p>
-  <a href="voice.html" target="_top">Open voice-only page</a>
+  </header>
   <div id="conference" hidden></div>
+  <footer>
+  <p><a id="direct" href="https://meet.element.io/FreeSnakeHQ20261013Field7a83d9" target="_blank" rel="noopener">Open direct voice room (fallback)</a></p>
+  <details class="note">
+    <summary>Connection tips / privacy</summary>
+    <p>Public room hosted by Element (Jitsi). Enable alerts connects HQ as a muted listener who can hear callers. Keep this page open and your phone unlocked. Use headphones. No camera needed.</p>
+  </details>
+  </footer>
 </body>
 </html>
