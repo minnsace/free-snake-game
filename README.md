@@ -76,6 +76,36 @@ Enter/Space to restart after game over.
 Mobile controls: tap to start, then touch anywhere to place and drag the
 joystick. Release to hide it; tap to restart after game over.
 
+## Browser voice chat
+
+The web build includes a public, shared voice room. Open the game or the
+`voice.html` page on the same hostname on both devices. On the computer,
+click **Enable alerts / test sound** and verify that you hear the test.
+On the phone, click **Join voice chat** and allow microphone access.
+Visitors with alerts enabled hear a repeating sound every five seconds while
+someone is in voice chat and they have not joined. Click **Join voice chat**
+on the computer to answer. **Leave voice chat** stops microphone capture;
+**Mute microphone** keeps you in the room but disables outgoing audio.
+
+Keep the page open, the phone unlocked, and the computer awake. Use HTTPS
+(or localhost for development). Browser autoplay restrictions require a click
+to enable sound; background tabs and locked phones may suspend alerts or calls.
+Use headphones to prevent feedback.
+
+Voice uses WebRTC and PeerJS 1.5.5, loaded from jsDelivr, with PeerJS's public
+signaling service. No account or API key is required. A connected visitor
+coordinates room presence; the remaining visitors reconnect if that visitor
+leaves. All visitors on the hostname can join: this is not a private or
+authenticated room. Signaling providers receive connection metadata.
+There is no configured TURN relay, so restrictive networks may block audio
+even when presence works. Verify a two-device call on your actual networks
+before relying on it, and keep another contact method available.
+
+This temporary version lives on `temp/call-emergency`, whose Pages workflow
+deploys that branch, not `main`. To restore the regular game, deploy the
+unchanged `main` branch using its **Deploy GitHub Pages** workflow and restore
+the Pages source branch to `main`. Do not merge this temporary branch.
+
 ## Notes
 
 - This project is a client-side game with no backend, no API keys, and no

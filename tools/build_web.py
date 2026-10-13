@@ -26,9 +26,19 @@ def customize_web_shell(generated: Path) -> None:
         '    <link rel="stylesheet" href="shell.css">\n</head>',
         1,
     )
-    html = html.replace("<body>", f"<body>\n{splash}", 1)
+    voice_panel = (
+        '<iframe src="voice.html" title="Shared voice chat" '
+        'allow="microphone; autoplay" '
+        'style="position:fixed;right:8px;bottom:8px;'
+        'width:min(380px,calc(100vw - 16px));height:310px;'
+        'border:2px solid #5bcd82;border-radius:8px;'
+        'z-index:2147483647;background:#112e16"></iframe>'
+    )
+    html = html.replace("<body>", f"<body>\n{splash}\n{voice_panel}", 1)
     index_path.write_text(html, encoding="utf-8")
     shutil.copy2(ROOT / "web" / "shell.css", generated / "shell.css")
+    for filename in ("voice.html", "voice.js"):
+        shutil.copy2(ROOT / "web" / filename, generated / filename)
 
 
 def main() -> None:
