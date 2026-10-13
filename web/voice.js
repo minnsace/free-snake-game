@@ -27,7 +27,7 @@
   function update() {
     const count = voiceIds().length;
     ui.presence.textContent = count
-      ? `${count} person${count === 1 ? "" : "s"} in voice chat${stream ? "" : " - join to answer!"}`
+      ? `${count} ${count === 1 ? "person" : "people"} in voice chat${stream ? "" : " - join to answer!"}`
       : "Nobody in voice chat yet.";
     ui.join.disabled = !connection?.open || joining || !!stream;
     ui.join.hidden = !!stream;
@@ -171,7 +171,10 @@
     outgoing.on("open", () => {
       clearTimeout(timeout);
       lastHubMessage = Date.now();
-      ui.status.textContent = stream ? "In voice chat - microphone enabled." : "Ready. Enable alerts, or join to talk.";
+      ui.status.textContent = stream
+        ? `In voice chat - microphone ${stream.getAudioTracks()[0].enabled ? "enabled" : "muted"}.`
+        : "Ready. Enable alerts, or join to talk.";
+      report("");
       sendPresence();
       update();
     });
