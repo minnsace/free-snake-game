@@ -27,7 +27,7 @@ def customize_web_shell(generated: Path) -> None:
         1,
     )
     voice_panel = (
-        '<iframe src="voice.html" title="Shared voice chat" '
+        '<iframe src="voice.html?v=jitsi-2" title="Shared voice chat" '
         'allow="microphone; autoplay" '
         'style="position:fixed;right:8px;bottom:8px;'
         'width:min(380px,calc(100vw - 16px));height:310px;'

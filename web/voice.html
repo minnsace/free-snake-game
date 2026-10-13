@@ -16,21 +16,22 @@
     #error { color: #ffb9ad; }
     #presence { font-weight: bold; }
     .note { font-size: 12px; }
+    #conference { margin-top: 10px; }
   </style>
-  <script defer src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
-  <script defer src="voice.js"></script>
+  <script defer src="https://meet.element.io/external_api.js"></script>
+  <script defer src="voice.js?v=jitsi-2"></script>
 </head>
 <body>
   <h1>Shared voice chat</h1>
-  <p id="status" role="status" aria-live="polite">Connecting...</p>
-  <p id="presence" aria-live="polite">Checking who is in voice chat...</p>
+  <p id="status" role="status" aria-live="polite">Loading voice controls...</p>
+  <p id="presence" aria-live="polite"></p>
   <button id="alerts">Enable alerts / test sound</button>
-  <button id="join" disabled>Join voice chat</button>
+  <button id="join">Join voice chat</button>
   <button id="leave" hidden>Leave voice chat</button>
-  <button id="mute" hidden>Mute microphone</button>
-  <button id="play" hidden>Play incoming audio</button>
   <p id="error" role="alert"></p>
-  <p class="note">Public room. Keep this page open and your phone unlocked. Click Enable alerts on your computer. Headphones recommended.</p>
+  <p><a id="direct" href="https://meet.element.io/FreeSnakeHQ20261013Field7a83d9" target="_blank" rel="noopener">Open direct voice room (fallback)</a></p>
+  <p class="note">Public room hosted by Element (Jitsi). Enable alerts connects HQ as a muted listener who can hear callers. Keep this page open and your phone unlocked. Use headphones. No camera needed.</p>
   <a href="voice.html" target="_top">Open voice-only page</a>
+  <div id="conference" hidden></div>
 </body>
 </html>

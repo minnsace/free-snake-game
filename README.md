@@ -85,21 +85,27 @@ On the phone, click **Join voice chat** and allow microphone access.
 Visitors with alerts enabled hear a repeating sound every five seconds while
 someone is in voice chat and they have not joined. Click **Join voice chat**
 on the computer to answer. **Leave voice chat** stops microphone capture;
-**Mute microphone** keeps you in the room but disables outgoing audio.
+the conference's microphone button keeps you in the room but mutes outgoing
+audio. **Enable alerts** connects HQ to the hosted conference as a muted
+listener: HQ can hear callers without transmitting its microphone.
+Use **Open direct voice room (fallback)** on both devices if embedding fails.
 
 Keep the page open, the phone unlocked, and the computer awake. Use HTTPS
 (or localhost for development). Browser autoplay restrictions require a click
 to enable sound; background tabs and locked phones may suspend alerts or calls.
 Use headphones to prevent feedback.
 
-Voice uses WebRTC and PeerJS 1.5.5, loaded from jsDelivr, with PeerJS's public
-signaling service. No account or API key is required. A connected visitor
-coordinates room presence; the remaining visitors reconnect if that visitor
-leaves. All visitors on the hostname can join: this is not a private or
-authenticated room. Signaling providers receive connection metadata.
-There is no configured TURN relay, so restrictive networks may block audio
-even when presence works. Verify a two-device call on your actual networks
-before relying on it, and keep another contact method available.
+Voice uses Element's hosted Jitsi conference and iframe API.
+Peer-to-peer mode is disabled for the embedded call so audio uses the hosted
+conference bridge instead of requiring a direct connection between devices.
+No account or API key is required; no visitor acts as a room server.
+The temporary room is public, not private or authenticated. The provider
+handles conference metadata and media; its terms of use apply.
+Alerts identify callers separately from participants named `HQ alert listener`.
+The native Jitsi microphone button controls muting. Leave returns to muted
+HQ listening if alerts are enabled. Reload to disconnect completely.
+Verify a two-device call on your actual networks before relying on it, and
+keep another contact method available. No public service guarantees uptime.
 
 This temporary version lives on `temp/call-emergency`, whose Pages workflow
 deploys that branch, not `main`. To restore the regular game, deploy the
